@@ -38,12 +38,12 @@ jobs:
           sonar.organization=${{ secrets.SONAR_ORGANISATION }}
           sonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
           sonar.projectName=LMS Backend
-          sonar.sources=.
-          sonar.tests=tests
+          sonar.sources=backend-flask
+          sonar.tests=backend-flask
 
           sonar.exclusions=**/venv/**,**/__pycache__/**,**/migrations/**
           sonar.test.inclusions=**/test_*.py
-          sonar.python.coverage.reportPaths=coverage.xml
+          sonar.python.coverage.reportPaths=backend-flask/coverage.xml
           sonar.sourceEncoding=UTF-8
           sonar.python.version=3.10
           EOL
