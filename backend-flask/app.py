@@ -8,6 +8,7 @@ import jwt
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from datetime import datetime
+import pickle
 
 app = Flask(__name__)
 CORS(app)
@@ -19,6 +20,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 
 db = SQLAlchemy(app)
 
+data = pickle.loads(request.data)
 
 class Enrollment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
