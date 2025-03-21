@@ -8,7 +8,6 @@ import jwt
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from datetime import datetime
-import pickle
 
 app = Flask(__name__)
 CORS(app)
@@ -19,8 +18,6 @@ app.config['SECRET_KEY'] = 'very-secret-key'  # Vulnerability: Hardcoded secret
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 db = SQLAlchemy(app)
-
-data = pickle.loads(request.data)
 
 class Enrollment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -526,6 +523,20 @@ def grade_student():
         db.session.rollback()
         print(f"Error submitting grade: {str(e)}")
         return jsonify({'message': 'Error submitting grade'}), 500
+
+@app.route('/api/search-users', methods=['GET'])
+def search_users():
+    search_term = request.args.get('q', '')
+    
+    # SQL Injection vulnerability: Direct string interpolation in query
+    conn = sqlite3.connect('instance/learning.db')
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT id, username, role FROM user WHERE username LIKE '%{search_term}%'")
+    
+    results = cursor.fetchall()
+    conn.close()
+    
+    return jsonify([{'id': r[0], 'username': r[1], 'role': r[2]} for r in results])
 
 
 if __name__ == '__main__':
